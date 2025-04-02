@@ -986,7 +986,21 @@ define(["jquery", "tableSelect", "miniTheme", "xmSelect", "lazyload"], function 
             },
             listenSort: function (options) {
                 table.on('sort(' + options.layFilter + ')', function (obj) {
-                    let defaultWhere = options.where || {}
+                    let defaultWhere = {}
+                    $.each(options.cols, function (_, colsV) {
+                        let formatFilter = {}
+                        let formatOp = {}
+                        $.each(colsV, function (i, v) {
+                            if (v.field) {
+                                if ($('#c-' + v.field).val()) {
+                                    formatFilter[v.field] = $('#c-' + v.field).val()
+                                    formatOp[v.field] = v.searchOp || '='
+                                    defaultWhere['filter'] = JSON.stringify(formatFilter);
+                                    defaultWhere['op'] = JSON.stringify(formatOp);
+                                }
+                            }
+                        })
+                    })
                     let sortWhere = {tableOrder: obj.field + ' ' + obj.type}
                     table.reload(options.id, {
                         where: {...defaultWhere, ...sortWhere}

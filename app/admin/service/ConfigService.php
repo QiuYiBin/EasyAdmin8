@@ -9,11 +9,10 @@ class ConfigService
 
     public static function getVersion()
     {
-        $version = cache('version');
+        $version = cache('site_version');
         if (empty($version)) {
             $version = sysConfig('site', 'site_version');
             cache('site_version', $version);
-            Cache::set('version', $version, 3600);
         }
         return $version;
     }
